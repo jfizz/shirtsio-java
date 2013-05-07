@@ -9,15 +9,15 @@ import java.util.Map;
 
 public class AuthenticationManager extends ApiTemplate {
 
-    private String authentication_url = "internal/integration/auth/";
+    private String authenticationUrl = "internal/integration/auth/";
 
     public Authentication authenticate(String username, String password) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("username", username);
         params.put("password", password);
 
         return restTemplate.getForObject(
-                buildRequestUrl(authentication_url, params), AuthenticationResult.class
+                buildRequestUrl(authenticationUrl, params), AuthenticationResult.class
         ).getAuthentication();
     }
 

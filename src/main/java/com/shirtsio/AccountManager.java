@@ -6,14 +6,14 @@ import com.shirtsio.model.AccountResult;
 
 public class AccountManager extends ApiTemplate {
 
-    private String account_url = "internal/integration/balance/";
+    private String accountUrl = "internal/integration/balance/";
 
     public String getBalance() {
         return getAccount().getBalance();
     }
 
     public Account getAccount() {
-        return restTemplate.getForObject(buildRequestUrl(account_url, null), AccountResult.class)
+        return restTemplate.getForObject(buildRequestUrl(accountUrl, null), AccountResult.class)
                            .getAccount();
     }
 

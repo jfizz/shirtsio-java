@@ -31,7 +31,7 @@ public class ApiTemplate {
     }
 
 
-    protected <T> T getObject(String url, Class<T> clazz, Map<String, String> params) {
+    protected <T> T getObject(String url, Class<T> clazz, Map<String, Object> params) {
         Result result = restTemplate.getForObject(buildRequestUrl(url, params), Result.class);
 
         try {
@@ -43,9 +43,11 @@ public class ApiTemplate {
         return null;
     }
 
+    protected <T> T getResponse(String url, Class<T> clazz, Map<String, Object> params) {
+        return restTemplate.getForObject(buildRequestUrl(url, params), clazz);
+    }
 
-
-    protected String buildRequestUrl(String urlPartial, Map<String, String> params) {
+    protected String buildRequestUrl(String urlPartial, Map<String, Object> params) {
         String requestUrl = String.format(baseUrl,
                                           Shirtsio.API_BASE, urlPartial, Shirtsio.apiKey);
 

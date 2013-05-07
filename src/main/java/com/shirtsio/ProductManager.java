@@ -14,14 +14,14 @@ import java.util.Map;
  * All methods throw RestClientException, api user may have to deal with this.
  */
 public class ProductManager extends ApiTemplate {
-    private String category_url = "products/category/";
+    private String categoryUrl = "products/category/";
 
     public Category[] getCategories() {
-        return getObjects(category_url, Category.class);
+        return getObjects(categoryUrl, Category.class);
     }
 
     public Product[] getProductsBy(long categoryId) {
-        return getObjects(category_url + categoryId + "/", Product.class);
+        return getObjects(categoryUrl + categoryId + "/", Product.class);
     }
 
     public DetailedProduct getProduct(long productId) {
@@ -29,7 +29,7 @@ public class ProductManager extends ApiTemplate {
     }
 
     public Map<String, Long> getInventoryCount(long productId, String color, String state) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         if(color != null) {
             params.put("color", color);
         }
@@ -40,7 +40,7 @@ public class ProductManager extends ApiTemplate {
         return getProductResult("products/" + productId + "/", params).getInventoryCount();
     }
 
-    public DetailedProduct getProductResult(String url, Map<String, String> params) {
+    public DetailedProduct getProductResult(String url, Map<String, Object> params) {
         return restTemplate.getForObject(buildRequestUrl(url, params), ProductResult.class)
                 .getResult();
     }
