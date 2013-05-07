@@ -4,6 +4,7 @@ package com.shirtsio;
 import com.shirtsio.model.Category;
 import com.shirtsio.model.DetailedProduct;
 import com.shirtsio.model.Product;
+import com.shirtsio.model.ProductResult;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,20 +13,19 @@ import java.util.Map;
 /**
  * All methods throw RestClientException, api user may have to deal with this.
  */
-public class ProductManager {
+public class ProductManager extends ApiTemplate {
     private String category_url = "products/category/";
-    private ApiTemplate apiTemplate = new ApiTemplate();
 
     public Category[] getCategories() {
-        return apiTemplate.getObjects(category_url, Category.class);
+        return getObjects(category_url, Category.class);
     }
 
     public Product[] getProductsBy(long categoryId) {
-        return apiTemplate.getObjects(category_url + categoryId + "/", Product.class);
+        return getObjects(category_url + categoryId + "/", Product.class);
     }
 
     public DetailedProduct getProduct(long productId) {
-        return apiTemplate.getObject("products/" + productId + "/", DetailedProduct.class, null);
+        return getObject("products/" + productId + "/", DetailedProduct.class, null);
     }
 
     public Map<String, Long> getInventoryCount(long productId, String color, String state) {
@@ -37,10 +37,12 @@ public class ProductManager {
             params.put("state", state);
         }
 
-        DetailedProduct detailedProduct =
-                apiTemplate.getProductResult("products/" + productId + "/", params);
+        return getProductResult("products/" + productId + "/", params).getInventoryCount();
+    }
 
-        return detailedProduct.getInventoryCount();
+    public DetailedProduct getProductResult(String url, Map<String, String> params) {
+        return restTemplate.getForObject(buildRequestUrl(url, params), ProductResult.class)
+                .getResult();
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.shirtsio;
 
+import com.shirtsio.model.Account;
 import com.shirtsio.model.DetailedProduct;
 import com.shirtsio.model.ProductResult;
 import com.shirtsio.model.Result;
@@ -11,9 +12,9 @@ import java.lang.reflect.Array;
 import java.util.Map;
 
 public class ApiTemplate {
-    private ObjectMapper mapper = new ObjectMapper();
-    private RestTemplate restTemplate = new RestTemplate();
-    private String baseUrl = "%s%s?api_key=%s";
+    protected ObjectMapper mapper = new ObjectMapper();
+    protected RestTemplate restTemplate = new RestTemplate();
+    protected String baseUrl = "%s%s?api_key=%s";
 
     public <T> T[] getObjects(String url, Class<T> clazz) {
         Result result =
@@ -30,7 +31,7 @@ public class ApiTemplate {
     }
 
 
-    public <T> T getObject(String url, Class<T> clazz, Map<String, String> params) {
+    protected <T> T getObject(String url, Class<T> clazz, Map<String, String> params) {
         Result result = restTemplate.getForObject(buildRequestUrl(url, params), Result.class);
 
         try {
@@ -42,12 +43,9 @@ public class ApiTemplate {
         return null;
     }
 
-    public DetailedProduct getProductResult(String url, Map<String, String> params) {
-        return restTemplate.getForObject(buildRequestUrl(url, params), ProductResult.class)
-                           .getResult();
-    }
 
-    private String buildRequestUrl(String urlPartial, Map<String, String> params) {
+
+    protected String buildRequestUrl(String urlPartial, Map<String, String> params) {
         String requestUrl = String.format(baseUrl,
                                           Shirtsio.API_BASE, urlPartial, Shirtsio.apiKey);
 
