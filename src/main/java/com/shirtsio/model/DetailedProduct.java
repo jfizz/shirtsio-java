@@ -28,13 +28,8 @@ public class DetailedProduct extends Product {
         return inventoryCount;
     }
 
-    public void setInventoryCount(String inventoryCount) {
-
-        try {
-            this.inventoryCount = mapper.readValue(inventoryCount, Map.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setInventoryCount(Map<String, Long> inventoryCount) {
+        this.inventoryCount = inventoryCount;
     }
 
     public boolean hasSleeves() {

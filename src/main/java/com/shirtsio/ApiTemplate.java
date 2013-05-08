@@ -1,50 +1,38 @@
 package com.shirtsio;
 
-import com.shirtsio.model.Account;
-import com.shirtsio.model.DetailedProduct;
-import com.shirtsio.model.ProductResult;
-import com.shirtsio.model.Result;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.shirtsio.exception.BadRequestException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
-public class ApiTemplate {
-    protected ObjectMapper mapper = new ObjectMapper();
-    protected RestTemplate restTemplate = new RestTemplate();
+/**
+ * All api users must handle BadRequestException.
+ */
+public class ApiTemplate extends RestTemplate {
     protected String baseUrl = "%s%s?api_key=%s";
 
-    public <T> T[] getObjects(String url, Class<T> clazz) {
-        Result result =
-                restTemplate.getForObject(buildRequestUrl(url, null), Result.class);
 
-        try {
-            return (T[]) mapper.readValue(
-                    result.getResult(), Array.newInstance(clazz, 0).getClass());
-        } catch (IOException e) {
-            // ignore
-        }
-
-        return null;
+    public ApiTemplate() {
+        super();
+        setErrorHandler(new ResponseErrorhandler());
     }
 
-
-    protected <T> T getObject(String url, Class<T> clazz, Map<String, Object> params) {
-        Result result = restTemplate.getForObject(buildRequestUrl(url, params), Result.class);
-
-        try {
-            return mapper.readValue(result.getResult(), clazz);
-        } catch (IOException e) {
-            // ignore
-        }
-
-        return null;
+    protected <T> T post(String url, Object data, Class<T> clazz) {
+        return this.postForObject(buildRequestUrl(url, null), data, clazz);
     }
 
-    protected <T> T getResponse(String url, Class<T> clazz, Map<String, Object> params) {
-        return restTemplate.getForObject(buildRequestUrl(url, params), clazz);
+    protected <T> T get(String url, Class<T> clazz, Map<String, Object> params) {
+        return getForObject(buildRequestUrl(url, params), clazz);
     }
 
     protected String buildRequestUrl(String urlPartial, Map<String, Object> params) {
@@ -59,5 +47,36 @@ public class ApiTemplate {
         }
 
         return requestUrl + sb.toString();
+    }
+}
+
+class ResponseErrorhandler extends DefaultResponseErrorHandler {
+    @Override
+    public void handleError(ClientHttpResponse response) throws IOException {
+        HttpStatus statusCode = response.getStatusCode();
+        MediaType contentType = response.getHeaders().getContentType();
+        Charset charset = contentType != null ? contentType.getCharSet() : null;
+        byte[] body = getResponseBody(response);
+        switch (statusCode.series()) {
+            case CLIENT_ERROR:
+                throw new BadRequestException(new String(body));
+            case SERVER_ERROR:
+                throw new HttpServerErrorException(statusCode, response.getStatusText(), body, charset);
+            default:
+                throw new RestClientException("Unknown status code [" + statusCode + "]");
+        }
+    }
+
+    private byte[] getResponseBody(ClientHttpResponse response) {
+        try {
+            InputStream responseBody = response.getBody();
+            if (responseBody != null) {
+                return FileCopyUtils.copyToByteArray(responseBody);
+            }
+        }
+        catch (IOException ex) {
+            // ignore
+        }
+        return new byte[0];
     }
 }

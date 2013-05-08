@@ -10,7 +10,7 @@ public class QuoteManager extends ApiTemplate {
 
     private String quoteUrl = "quote";
     public Quote getQuote(Map<String, Object> params) {
-        return getResponse(quoteUrl, QuoteResponse.class, params).getResult();
+        return get(quoteUrl, QuoteResponse.class, params).getResult();
     }
 
     public static void main(String[] args) {
@@ -20,6 +20,6 @@ public class QuoteManager extends ApiTemplate {
         params.put("garment[0][sizes][med]", 100);
         params.put("print[front][color_count]", 5);
 
-        new QuoteManager().getQuote(params);
+        System.out.println(new QuoteManager().getQuote(params).getDiscount());
     }
 }

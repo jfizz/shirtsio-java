@@ -2,7 +2,7 @@ package com.shirtsio;
 
 
 import com.shirtsio.model.Authentication;
-import com.shirtsio.model.AuthenticationResult;
+import com.shirtsio.model.AuthenticationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +16,8 @@ public class AuthenticationManager extends ApiTemplate {
         params.put("username", username);
         params.put("password", password);
 
-        return restTemplate.getForObject(
-                buildRequestUrl(authenticationUrl, params), AuthenticationResult.class
-        ).getAuthentication();
+        return get(authenticationUrl, AuthenticationResponse.class, params)
+                    .getResult();
     }
 
     public static void main(String[] args) {

@@ -2,11 +2,12 @@ package com.shirtsio;
 
 
 import com.shirtsio.model.Category;
+import com.shirtsio.model.CategoryResponse;
 import com.shirtsio.model.DetailedProduct;
 import com.shirtsio.model.Product;
-import com.shirtsio.model.ProductResult;
+import com.shirtsio.model.ProductResponse;
+import com.shirtsio.model.ProductsResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,15 +18,16 @@ public class ProductManager extends ApiTemplate {
     private String categoryUrl = "products/category/";
 
     public Category[] getCategories() {
-        return getObjects(categoryUrl, Category.class);
+        return get(categoryUrl, CategoryResponse.class, null).getResult();
     }
 
     public Product[] getProductsBy(long categoryId) {
-        return getObjects(categoryUrl + categoryId + "/", Product.class);
+        return get(categoryUrl + categoryId + "/", ProductsResponse.class, null)
+                    .getResult();
     }
 
     public DetailedProduct getProduct(long productId) {
-        return getObject("products/" + productId + "/", DetailedProduct.class, null);
+        return get("products/" + productId + "/", ProductResponse.class, null).getResult();
     }
 
     public Map<String, Long> getInventoryCount(long productId, String color, String state) {
@@ -37,19 +39,16 @@ public class ProductManager extends ApiTemplate {
             params.put("state", state);
         }
 
-        return getProductResult("products/" + productId + "/", params).getInventoryCount();
-    }
-
-    public DetailedProduct getProductResult(String url, Map<String, Object> params) {
-        return restTemplate.getForObject(buildRequestUrl(url, params), ProductResult.class)
-                .getResult();
+        return get("products/" + productId + "/", ProductResponse.class, params)
+                    .getResult().getInventoryCount();
     }
 
     public static void main(String[] args) {
         ProductManager manager = new ProductManager();
-        System.out.println(manager.getCategories().length);
-        System.out.println(manager.getProductsBy(1));
-        System.out.println(manager.getInventoryCount(3, "White", "CA"));
-        System.out.println(manager.getProduct(30));
+//        System.out.println(manager.getCategories().length);
+//        System.out.println(manager.getProductsBy(1));
+        // todo
+//        System.out.println(manager.getInventoryCount(3, "White", "CA"));
+        System.out.println(manager.getProduct(300));
     }
 }
