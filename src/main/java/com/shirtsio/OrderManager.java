@@ -9,6 +9,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrderManager extends ApiTemplate {
 
@@ -21,7 +23,9 @@ public class OrderManager extends ApiTemplate {
     }
 
     public OrderStatus getOrderStatus(Long orderId) {
-        return get(orderStatusUrl + orderId, OrderStatusResponse.class, null).getResult();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("order_id", orderId);
+        return get(orderStatusUrl, OrderStatusResponse.class, params).getResult();
     }
 
     public static void main(String[] args) {
@@ -56,5 +60,7 @@ public class OrderManager extends ApiTemplate {
 
 
         System.out.println(new OrderManager().placeOrder(params).getOrderId());
+
+        new OrderManager().getOrderStatus(9999999L).getStatus();
     }
 }
