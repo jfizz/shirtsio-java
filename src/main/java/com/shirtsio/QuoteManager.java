@@ -19,6 +19,7 @@ public class QuoteManager extends ApiTemplate {
         params.put("garment[0][color]", "White");
         params.put("garment[0][sizes][med]", 100);
         params.put("print[front][color_count]", 5);
+        params.put("third_party_shipping", 0);
 
         System.out.println(new QuoteManager().getQuote(params).getDiscount());
     }

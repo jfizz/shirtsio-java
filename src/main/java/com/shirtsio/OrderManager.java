@@ -36,6 +36,8 @@ public class OrderManager extends ApiTemplate {
         params.add("print[back][color_count]", "4");
         params.add("print[back][colors][0]", "101C");
         params.add("print[back][colors][1]", "107U");
+        params.add("third_party_shipping", 0);
+//      params.add("third_party_shipping", 1);
         params.add("addresses[0][name]", "John Doe");
         params.add("addresses[0][address]", "123 Hope Ln.");
         params.add("addresses[0][city]", "Las Vegas");
@@ -45,9 +47,21 @@ public class OrderManager extends ApiTemplate {
         params.add("addresses[0][batch]", "1");
         params.add("addresses[0][sizes][med]", "2");
         params.add("addresses[0][sizes][lrg]", "2");
+        //UPS Shipping Account
+//      params.add("addresses[0][third_party_ship_type]", "ups");
+//      params.add("third_party_shipping[0][account_type]", "ups");
+//      params.add("third_party_shipping[0][account_number]", "ups1234567890");
+        //USPS Shipping Account
+//      params.add("addresses[0][third_party_ship_type]", "usps");
+//      params.add("third_party_shipping[0][account_type]", "usps");
+//      params.add("third_party_shipping[0][username]", "Test Account");
+//      params.add("third_party_shipping[0][password]", "test");
+        //DHL Shipping Account
+//      params.add("addresses[0][third_party_ship_type]", "dhl");
+//      params.add("third_party_shipping[0][account_type]", "dhl");
+//      params.add("third_party_shipping[0][account_number]", "dhl1234567890");
         params.add("print_type", "Digital Print");
 //        params.add("extra_screens", "Front");
-        params.add("ship_type", "Standard");
         params.add("garment[0][product_id]", "2");
         params.add("garment[0][color]", "White");
         params.add("garment[0][sizes][med]", "2");
