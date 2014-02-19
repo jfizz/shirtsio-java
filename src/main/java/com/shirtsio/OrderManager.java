@@ -60,7 +60,7 @@ public class OrderManager extends ApiTemplate {
 //      params.add("addresses[0][third_party_ship_type]", "dhl");
 //      params.add("third_party_shipping[0][account_type]", "dhl");
 //      params.add("third_party_shipping[0][account_number]", "dhl1234567890");
-        params.add("print_type", "Digital Print");
+        params.add("print_type", "DTG Print");
 //        params.add("extra_screens", "Front");
         params.add("garment[0][product_id]", "2");
         params.add("garment[0][color]", "White");
